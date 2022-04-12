@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo Canvas</title>
+    <script src="Circle.js"></script>
+</head>
+<body>
+<img id="hcc" src="hcc-removebg-preview.png" height="250" width="250" style="display: none"/>
+<canvas id="paper" width="800px" height="400px" style="background-color: bisque"></canvas>
+<script>
+  let paper = document.getElementById('paper');
+  let pen = paper.getContext('2d');
+
+  let circles = [];
+
+  function creatBall() {
+      for (let i = 0; i < 10; i++) {
+          let x = randomNumber(0,paper.width);
+          let y = randomNumber(0,paper.height);
+          let radius = randomNumber(20,60);
+          let color = randomColor();
+          let speed = randomNumber(5,15)
+          let circle = new Circle(x,y,radius,color);
+          circle.speedX = speed;
+          circle.speedY = speed;
+          circles.push(circle);
+      }
+  }
+  function showAll(){
+      for (let i = 0; i < circles.length; i++) {
+          circles[i].render(paper)
+      }
+  }
+
+  creatBall();
+  showAll();
+
+  function randomNumber(min, max) {
+      let rand = Math.floor(Math.random()*(max-min))+min;
+      return rand;
+  }
+
+  function randomColor() {
+      let r = randomNumber(0,255)
+      let g = randomNumber(0,255)
+      let b = randomNumber(0,255)
+      return `rgb(${r},${g},${b})`;
+  }
+
+  // setInterval(main,1000/24)
+
+
+  function main() {
+      pen.clearRect(0,0,paper.width,paper.height);
+      for (let i = 0; i < circles.length; i++) {
+          if(circles[i].x+circles[i].radius >= paper.width || circles[i].x-circles[i].radius <= 0){
+              circles[i].speedX = -circles[i].speedX;
+          }
+
+          if(circles[i].y+circles[i].radius >= paper.height || circles[i].y-circles[i].radius <= 0){
+              circles[i].speedY = -circles[i].speedY;
+          }
+          circles[i].move();
+          circles[i].render(paper);
+      }
+
+      requestAnimationFrame(main)
+  }
+
+  main();
+
+  // let img = document.getElementById('hcc');
+  // pen.drawImage(img,100,100,250,250)
+</script>
+</body>
+</html>
